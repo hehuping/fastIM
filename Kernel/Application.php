@@ -25,7 +25,6 @@ class Application
 
     protected $config = array();
     protected $route;
-    protected $swoole_table;
 
     public function init($cfg, $appPath = "App")
     {
@@ -45,10 +44,12 @@ class Application
             }
         }
         $server->set($this->config);
+
         $server->on('Start', function () {
             cli_set_process_title("Swoole_Master");
             echo "Master Start\n";
         });
+
         $server->on("WorkerStart", function () use($server){
             //全局server
             $GLOBALS['server'] = $server;
@@ -67,7 +68,7 @@ class Application
             if (empty($routeInfo)) {
                 $this->handleResponse($swResponse, new Result(404, null, 'uri not found'), 404);
             } elseif (!in_array(strtoupper($method), $routeInfo['method'])) {
-                $this->handleResponse($swResponse, new Result(404, null, 'method not support.'), 404);
+                $this->handleResponse($swResponse, new Result(403, null, 'method not support.'), 403);
             } else {
                 $callback = $routeInfo['callback'];
                 try {
@@ -126,7 +127,7 @@ class Application
         $server->start();
     }
 
-    private function dispatcher($server, $frame, $event)
+    private function dispatcher(SwooleServer $server, $frame, $event)
     {
         //获取fd关联的请求分发路径
         try{
@@ -143,7 +144,7 @@ class Application
         if (!$reqInfo) {
             if($event!='CLOSE'){
                 $this->websocketResponse($server, $frame, new Result(1001, null, '获取请求路径信息失败！'));
-                $server->disconnect($frame->fd);
+                //$server->disconnect($frame->fd);
                 $server->close($frame->fd);
                 return false;
             }
@@ -166,7 +167,7 @@ class Application
     }
 
     //简化结果处理
-    private function handleResponse($swResponse, $result, $status = 200)
+    private function handleResponse(SwooleResponse $swResponse, $result, $status = 200)
     {
         $swResponse->status($status);
         /* $swResponse->header('Access-Control-Allow-Origin', '*');
@@ -181,7 +182,7 @@ class Application
      * @param $request
      * @param $result
      */
-    private function websocketResponse($server, $request, $result)
+    private function websocketResponse(SwooleServer $server, $request, $result)
     {
         Logger::write('DEBUG:'. json_encode($result, JSON_UNESCAPED_UNICODE), 'debug_log-');
         $server->push($request->fd, json_encode($result, JSON_UNESCAPED_UNICODE));
