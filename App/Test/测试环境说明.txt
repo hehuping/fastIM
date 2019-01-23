@@ -1,0 +1,11 @@
+﻿开发环境尽量不要依赖composer
+phpunit 需要支持6.1.3以上版本
+
+文件说明：
+config.php：测试用配置文件，同框架代码
+bootstarp.php：框架启动脚本
+phpunit.xml：运行test前会自动加载此xml中的文件和类，参见https://phpunit.de/manual/current/zh_cn/organizing-tests.html
+
+运行命令：
+phpunit +对应test文件 （配置系统变量后）
+php phpunit.phar +对应test文件 --filter + 对应test方法
