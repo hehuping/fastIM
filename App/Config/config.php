@@ -15,8 +15,8 @@ return array(
         'port'=>'63113'
     ],
     'redis' => [
-        'host' => "***",
-        'password'=>'***',
+        'host' => "127.0.0.1",
+        'password'=>'hehuping',
         'port' => 6379,
         'db'   => 4
     ],
