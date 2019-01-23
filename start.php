@@ -17,8 +17,8 @@ if(file_exists($pidFile)){
 $cfg = [
     'host'=>'0.0.0.0',
     'port'=>9501,
-    'worker_num' => 5,                                             //worker进程数，cpu倍数
-    'daemonize' => 1 ,                                               //是否守护进程运行,1是0否
+    'worker_num' => 2,                                             //worker进程数，cpu倍数
+    'daemonize' => 0 ,                                               //是否守护进程运行,1是0否
     'max_request' => 10000,                                         //最大请求数，超出则重启worker进程
     'max_conn' => 10000,                                            //最大连接数,超出则拒绝
    // 'dispatch_mode' =>3,                                            //worker进程分配模式,4按ip（dispatch_mode=1/3时，底层会屏蔽onConnect/onClose事件，原因是这2种模式下无法保证onConnect/onClose/onReceive的顺序）
@@ -26,8 +26,6 @@ $cfg = [
     'open_tcp_nodelay' => true,                                     //是否关闭TCP Nagle合并算法
     'log_file' => __DIR__.'/Data/sys/'.date('Y_m_d').'.log',        //swoole系统日志
     'pid_file' => $pidFile,                                         //系统进程文件
-  #  'ssl_cert_file' => __DIR__.'/crt/2_test.wss.daishujiankang.com.crt',
-  #  'ssl_key_file' => __DIR__.'/crt/3_test.wss.daishujiankang.com.key',
    // 'heartbeat_check_interval' => 5,
     //'heartbeat_idle_time' => 3600,
 ];
